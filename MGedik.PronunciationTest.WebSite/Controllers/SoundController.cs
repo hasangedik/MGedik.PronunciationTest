@@ -59,9 +59,9 @@ namespace MGedik.PronunciationTest.WebSite.Controllers
                     {
                         Encoding = RecognitionConfig.Types.AudioEncoding.Linear16,
                         SampleRateHertz = 16000,
-                        LanguageCode = "en",
+                        LanguageCode = "en"
                     },
-                    InterimResults = true,
+                    InterimResults = true
                 }
             });
 
@@ -113,7 +113,6 @@ namespace MGedik.PronunciationTest.WebSite.Controllers
             await streamingCall.WriteCompleteAsync();
             await printResponses;
             return finalText;
-
         }
     }
 }

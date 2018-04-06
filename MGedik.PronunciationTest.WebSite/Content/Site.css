@@ -1,24 +1,68 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+﻿
+.image-wrap {
+    border: 2px solid #eee;
+    width: 500px;
+    text-align: center;
+    height: 500px;
+    overflow: hidden;
+    margin: 80px auto 20px;
+    position: relative;
 }
 
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    .image-wrap i.fa-question-circle {
+        font-size: 20px;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+    }
+
+    .image-wrap.success img,
+    .image-wrap.fail img {
+        opacity: 0.5;
+    }
+
+    .image-wrap .fa-check,
+    .image-wrap .fa-times {
+        display: none;
+    }
+
+    .image-wrap.success .fa-check {
+        position: absolute;
+        font-size: 30rem;
+        color: green;
+        display: block;
+        top: 50%;
+        left: 50%;
+        margin: -155px -125px;
+    }
+
+    .image-wrap.fail .fa-times {
+        position: absolute;
+        font-size: 30rem;
+        color: red;
+        display: block;
+        top: 50%;
+        left: 50%;
+        margin: -155px -125px;
+    }
+
+    .image-wrap img {
+        max-width: 500px;
+        max-height: 500px;
+        display: inline-block;
+    }
+
+.text {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0px 0 20px;
+    color: green;
+    display: none;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
-.dl-horizontal dt {
-    white-space: normal;
-}
-
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
-    max-width: 280px;
+.controls {
+    max-width: 500px;
+    margin: auto;
 }

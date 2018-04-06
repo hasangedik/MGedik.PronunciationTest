@@ -27,29 +27,45 @@ $(function () {
         audioRecorder.exportMonoWAV(function (blob) {
             var formData = new FormData();
             formData.append('file', blob);
-            makeXMLHttpRequest('/sound/PostFormData', formData, function () {
-                console.log('File uploaded.');
+            makeXMLHttpRequest('/sound/PostFormData', formData, function (response) {
+                if (response.Status == "OK") {
+                    $(".image-wrap").addClass("success");
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    $(".image-wrap").addClass("fail");
+                }
             });
         });
     });
+
+    $("#question").on("click", function () {
+        $(".text").stop().fadeToggle();
+    });
+
+    $("#record").on("click",
+        function (e) {
+            toggleRecording(e.target);
+        });
 });
 
 function makeXMLHttpRequest(url, data, callback) {
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (request.readyState == 4 && request.status == 200) {
-            callback();
+            callback(JSON.parse(request.response));
         }
     };
     request.open('POST', url);
     request.send(data);
 }
 
-function saveAudio() {
-    audioRecorder.exportWAV(doneEncoding);
-    // could get mono instead by saying
-    // audioRecorder.exportMonoWAV( doneEncoding );
-}
+//function saveAudio() {
+//    audioRecorder.exportWAV(doneEncoding);
+//    // could get mono instead by saying
+//    // audioRecorder.exportMonoWAV( doneEncoding );
+//}
 
 function gotBuffers(buffers) {
     // the ONLY time gotBuffers is called is right after a new recording is completed - 
@@ -63,18 +79,21 @@ function doneEncoding(blob) {
 }
 
 function toggleRecording(e) {
-    if (e.classList.contains("recording")) {
+    if ($(e).hasClass("btn-danger")) {
         // stop recording
         audioRecorder.stop();
-        e.classList.remove("recording");
-        audioRecorder.getBuffers(gotBuffers);
+        $(e).removeClass("btn-danger");
+        //audioRecorder.getBuffers(gotBuffers);
+        $("#send").removeAttr("disabled");
     } else {
         // start recording
         if (!audioRecorder)
             return;
-        e.classList.add("recording");
+        $(e).addClass("btn-danger");
         audioRecorder.clear();
         audioRecorder.record();
+        $("#send").attr("disabled", true);
+        $(".image-wrap").removeClass("fail");
     }
 }
 
