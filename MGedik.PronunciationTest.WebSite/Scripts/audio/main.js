@@ -41,7 +41,10 @@ $(function () {
     });
 
     $("#question").on("click", function () {
-        $(".text").stop().fadeToggle();
+        $(".text").stop().fadeToggle().toggleClass("active");
+        if ($(".text").hasClass("active")) {
+            responsiveVoice.speak($(".text").text(), "UK English Male", { onstart: function () { $("#record").attr("disabled","disabled") }, onend: function () { $("#record").removeAttr("disabled") } });
+        }
     });
 
     $("#record").on("click",
