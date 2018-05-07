@@ -13,7 +13,8 @@ namespace MGedik.PronunciationTest.WebSite
             
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/css/font-awesome.min.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/audio").Include(
                 "~/Scripts/audio/main.js",

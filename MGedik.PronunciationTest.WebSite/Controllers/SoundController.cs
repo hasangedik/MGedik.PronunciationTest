@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,14 +18,15 @@ namespace MGedik.PronunciationTest.WebSite.Controllers
     public class SoundController : Controller
     {
         [HttpPost]
-        public async Task<ActionResult> PostFormData(HttpPostedFileBase file)
+        public async Task<ActionResult> PostFormData(HttpPostedFileBase file, string testType)
         {
             if (file.ContentLength < 1)
                 return new HttpStatusCodeResult(HttpStatusCode.UnsupportedMediaType);
 
             TestItem selectedTestItem = Session["selectedTestItem"] as TestItem;
+            SpeakTestItem selectedSpeakTestItem = Session["selectedSpeakTestItem"] as SpeakTestItem;
 
-            if (selectedTestItem == null)
+            if ((testType == "text" && selectedTestItem == null) || (testType == "speak" && selectedSpeakTestItem == null))
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             string root = Server.MapPath("~/App_Data");
@@ -33,10 +35,43 @@ namespace MGedik.PronunciationTest.WebSite.Controllers
             file.SaveAs(filePath);
 
             string resultText = await Recognition(System.Web.Hosting.HostingEnvironment.MapPath(@"~/App_Data/spech text-d0a18cc9ed24.json"), filePath);
+            resultText = resultText.ToLower(CultureInfo.GetCultureInfo("en-US")).Trim();
+            if (testType == "text")
+            {
+                if (selectedTestItem != null && selectedTestItem.Pronunciation == resultText.ToLower().Trim())
+                {
+                    TestContainer.SetTestItemStatus(selectedTestItem.Id, true);
+                    return Json(new { Status = "OK", SpeechToText = resultText });
+                }
+                if (selectedTestItem != null)
+                    TestContainer.SetTestItemStatus(selectedTestItem.Id, false);
+            }
+            else if(testType == "speak")
+            {
+                if (selectedSpeakTestItem != null)
+                {
+                    if (selectedSpeakTestItem.Answer.Contains("|"))
+                    {
+                        var possibleAnswerList = selectedSpeakTestItem.Answer.Split('|').ToList();
+                        foreach (var possibleAnswer in possibleAnswerList)
+                        {
+                            if (resultText.StartsWith(possibleAnswer))
+                            {
+                                SpeakTestContainer.SetSpeakTestItemStatus(selectedSpeakTestItem.Id, true);
+                                return Json(new { Status = "OK", SpeechToText = resultText });
+                            }
+                        }
 
-            if (selectedTestItem.Pronunciation == resultText.ToLower().Trim())
-                return Json(new { Status = "OK", SpeechToText = resultText });
-
+                    }
+                    else if (resultText.StartsWith(selectedSpeakTestItem.Answer))
+                    {
+                        SpeakTestContainer.SetSpeakTestItemStatus(selectedSpeakTestItem.Id, true);
+                        return Json(new {Status = "OK", SpeechToText = resultText});
+                    }
+                }
+                if (selectedSpeakTestItem != null)
+                    SpeakTestContainer.SetSpeakTestItemStatus(selectedSpeakTestItem.Id, false);
+            }
             return Json(new { Status = "FAIL", SpeechToText = resultText });
         }
 
@@ -59,7 +94,7 @@ namespace MGedik.PronunciationTest.WebSite.Controllers
                     {
                         Encoding = RecognitionConfig.Types.AudioEncoding.Linear16,
                         SampleRateHertz = 16000,
-                        LanguageCode = "en"
+                        LanguageCode = "en-US"
                     },
                     InterimResults = true
                 }

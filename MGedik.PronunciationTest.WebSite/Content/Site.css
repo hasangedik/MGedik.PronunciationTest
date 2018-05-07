@@ -62,7 +62,99 @@
     display: none;
 }
 
+.text-wrap {
+    font-size: 40px;
+}
+.text-wrap .fa-check,
+    .text-wrap .fa-times {
+        display: none;
+    }
+
+    .text-wrap.success .fa-check {
+        color: green;
+        display: block;
+    }
+
+    .text-wrap.fail .fa-times {
+        color: red;
+        display: block;
+    }
+
 .controls {
     max-width: 500px;
     margin: auto;
+}
+
+/* auto writer */
+
+#container > div.writer {
+    background-color: #ccc;
+    padding: 1rem;
+}
+
+.writer {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: px;
+    font-size: 36px;
+}
+
+.blinking-cursor {
+    font-weight: 100;
+    font-size: 36px;
+    color: #2E3D48;
+    -webkit-animation: 1s blink step-end infinite;
+    -moz-animation: 1s blink step-end infinite;
+    -ms-animation: 1s blink step-end infinite;
+    -o-animation: 1s blink step-end infinite;
+    animation: 1s blink step-end infinite;
+}
+
+@keyframes blink {
+    from, to {
+        color: transparent;
+    }
+
+    50% {
+        color: black;
+    }
+}
+
+@-moz-keyframes blink {
+    from, to {
+        color: transparent;
+    }
+
+    50% {
+        color: black;
+    }
+}
+
+@-webkit-keyframes blink {
+    from, to {
+        color: transparent;
+    }
+
+    50% {
+        color: black;
+    }
+}
+
+@-ms-keyframes blink {
+    from, to {
+        color: transparent;
+    }
+
+    50% {
+        color: black;
+    }
+}
+
+@-o-keyframes blink {
+    from, to {
+        color: transparent;
+    }
+
+    50% {
+        color: black;
+    }
 }

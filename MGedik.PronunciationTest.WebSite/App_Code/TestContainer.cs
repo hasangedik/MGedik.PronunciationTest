@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using MGedik.PronunciationTest.WebSite.Models;
 
@@ -39,6 +40,9 @@ namespace MGedik.PronunciationTest.WebSite
             var nextTestItem = HttpContext.Current.Session["nextTestItem"] as TestItem;
             if (nextTestItem != null)
             {
+                if (TestItems.Count(x => x.IsSucceed.HasValue && x.IsSucceed.Value) == TestItems.Count)
+                    return null;
+
                 TestItem item;
                 int nextIndex = TestItems.IndexOf(nextTestItem) + 1;
                 if (nextIndex < TestItems.Count)
@@ -47,6 +51,9 @@ namespace MGedik.PronunciationTest.WebSite
                     item = TestItems[0];
 
                 HttpContext.Current.Session["nextTestItem"] = item;
+                if (item.IsSucceed.HasValue && item.IsSucceed.Value && TestItems.Any(x => !x.IsSucceed.HasValue || x.IsSucceed.Value == false))
+                    GetNextTestItem();
+                
                 return item;
             }
             else
@@ -55,6 +62,11 @@ namespace MGedik.PronunciationTest.WebSite
                 HttpContext.Current.Session["nextTestItem"] = item;
                 return item;
             }
+        }
+
+        public static void SetTestItemStatus(int id, bool status)
+        {
+            TestItems.First(x => x.Id == id).IsSucceed = status;
         }
     }
 }

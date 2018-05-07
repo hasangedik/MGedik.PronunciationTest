@@ -27,14 +27,36 @@ $(function () {
         audioRecorder.exportMonoWAV(function (blob) {
             var formData = new FormData();
             formData.append('file', blob);
+
+            var testType = $("#send").data("testtype");
+
+            formData.append('testType', testType);
             makeXMLHttpRequest('/sound/PostFormData', formData, function (response) {
-                if (response.Status == "OK") {
-                    $(".image-wrap").addClass("success");
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1500);
+                if (testType == "text") {
+                    if (response.Status == "OK") {
+                        $(".image-wrap").addClass("success");
+                        setTimeout(function() {
+                                location.reload();
+                            },1500);
+                    } else {
+                        $(".image-wrap").addClass("fail");
+                        setTimeout(function() {
+                                location.reload();
+                            },1500);
+                    }
                 } else {
-                    $(".image-wrap").addClass("fail");
+                    if (response.Status == "OK") {
+                        $(".text-wrap").addClass("success");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                        $(".responseText").text(response.SpeechToText);
+                    } else {
+                        $(".text-wrap").addClass("fail");
+                        setTimeout(function () {
+                            $(".text-wrap").removeClass("fail");
+                        }, 1200);
+                    }
                 }
             });
         });
@@ -43,7 +65,7 @@ $(function () {
     $("#question").on("click", function () {
         $(".text").stop().fadeToggle().toggleClass("active");
         if ($(".text").hasClass("active")) {
-            responsiveVoice.speak($(".text").text(), "UK English Male", { onstart: function () { $("#record").attr("disabled","disabled") }, onend: function () { $("#record").removeAttr("disabled") } });
+            responsiveVoice.speak($(".text").text(), "US English Male", { onstart: function () { $("#record").attr("disabled", "disabled") }, onend: function () { $("#record").removeAttr("disabled") } });
         }
     });
 
@@ -51,6 +73,11 @@ $(function () {
         function (e) {
             toggleRecording(e.target);
         });
+
+    if ($("p").hasClass("writer")) {
+        typeIt();
+        responsiveVoice.speak($(".text").text(), "US English Male");
+    }
 });
 
 function makeXMLHttpRequest(url, data, callback) {
@@ -168,3 +195,31 @@ function initAudio() {
 }
 
 window.addEventListener('load', initAudio);
+
+
+/* auto writer */
+
+var $el = $('.writer'),
+    txt = $el.text(),
+    txtLen = txt.length,
+    timeOut,
+    char = 0;
+
+$el.text('|');
+
+function typeIt() {
+    var humanize = Math.round(Math.random() * (100 - 20)) + 20;
+    timeOut = setTimeout(function () {
+        char++;
+        var type = txt.substring(0, char);
+        $el.text(type + '|');
+        typeIt();
+
+        if (char == txtLen) {
+            $el.text($el.text().slice(0, -1)); // remove the '|'
+
+            $el.append("<span class='blinking-cursor'>|</span>");
+            clearTimeout(timeOut);
+        }
+    }, humanize);
+};

@@ -2,15 +2,15 @@
 
 namespace MGedik.PronunciationTest.WebSite.Controllers
 {
-    public class TestController : Controller
+    public class SpeakTestController : Controller
     {
         public ActionResult Index()
         {
-            var selectedTestItem = TestContainer.GetNextTestItem();
+            var selectedTestItem = SpeakTestContainer.GetNextSpeakTestItem();
             if (selectedTestItem == null)
                 return RedirectToAction("TestResult", "Home");
 
-            Session["selectedTestItem"] = selectedTestItem;
+            Session["selectedSpeakTestItem"] = selectedTestItem;
             return View(selectedTestItem);
         }
     }

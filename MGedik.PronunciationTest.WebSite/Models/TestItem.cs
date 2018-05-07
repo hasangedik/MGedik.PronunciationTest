@@ -6,5 +6,6 @@
         public string Title { get; set; }
         public string ImagePath { get; set; }
         public string Pronunciation { get; set; }
+        public bool? IsSucceed { get; set; }
     }
 }
