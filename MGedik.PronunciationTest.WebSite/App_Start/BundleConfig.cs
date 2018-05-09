@@ -12,7 +12,7 @@ namespace MGedik.PronunciationTest.WebSite
                         "~/Scripts/jquery-3.3.1.min.js"));
             
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap.min.css",
                       "~/Content/site.css",
                       "~/Content/css/font-awesome.min.css"));
 
