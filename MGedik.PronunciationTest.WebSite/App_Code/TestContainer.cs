@@ -43,6 +43,9 @@ namespace MGedik.PronunciationTest.WebSite
                 if (TestItems.Count(x => x.IsSucceed.HasValue && x.IsSucceed.Value) == TestItems.Count)
                     return null;
 
+                if (!TestItems.First(x => x.Id == nextTestItem.Id).IsSucceed.HasValue)
+                    return nextTestItem;
+
                 TestItem item;
                 int nextIndex = TestItems.IndexOf(nextTestItem) + 1;
                 if (nextIndex < TestItems.Count)
@@ -52,7 +55,7 @@ namespace MGedik.PronunciationTest.WebSite
 
                 HttpContext.Current.Session["nextTestItem"] = item;
                 if (item.IsSucceed.HasValue && item.IsSucceed.Value && TestItems.Any(x => !x.IsSucceed.HasValue || x.IsSucceed.Value == false))
-                    GetNextTestItem();
+                    return GetNextTestItem();
                 
                 return item;
             }

@@ -49,8 +49,8 @@ $(function () {
                         $(".text-wrap").addClass("success");
                         setTimeout(function () {
                             location.reload();
-                        }, 1500);
-                        $(".responseText").text(response.SpeechToText);
+                        }, 1200);
+                        //$(".responseText").text(response.SpeechToText);
                     } else {
                         $(".text-wrap").addClass("fail");
                         setTimeout(function () {

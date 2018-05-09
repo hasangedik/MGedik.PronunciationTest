@@ -44,7 +44,7 @@ namespace MGedik.PronunciationTest.WebSite
 
                 HttpContext.Current.Session["nextSpeakTestItem"] = item;
                 if (item.IsSucceed.HasValue && item.IsSucceed.Value && SpeakTestItems.Any(x=> !x.IsSucceed.HasValue || x.IsSucceed.Value == false))
-                    GetNextSpeakTestItem();
+                    return GetNextSpeakTestItem();
                 return item;
             }
             else
